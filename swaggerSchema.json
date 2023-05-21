@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:4040"
+      "url": "https://react-blog-backend-production-ba87.up.railway.app"
     }
   ],
   "paths": {
