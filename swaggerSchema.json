@@ -1,0 +1,670 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Блог",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4040"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Метод для регистрации нового пользователя",
+        "tags": ["Auth"],
+        "operationId": "registerUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Возращает только что созданного пользователя",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Метод для входа в аккаунт",
+        "tags": ["Auth"],
+        "operationId": "loginUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Возращает пользователя",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Устанавливает jwtToken в Cookie",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoggedInUser"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "summary": "Метод для получения информации, вошёл пользователь в аккаунт или нет",
+        "tags": ["Auth"],
+        "operationId": "profile",
+        "parameters": [
+          {
+            "name": "jwtToken",
+            "in": "cookie",
+            "required": true,
+            "description": "JWT токен",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возращает информацию о пользователе",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoggedInUser"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "summary": "Метод для выхода из аккаунта (очистка cookie)",
+        "tags": ["Auth"],
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "Удаляет jwtToken в Cookie",
+            "headers": {
+              "Set-Cookie": {
+                "description": "Удаляет jwtToken в Cookie",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts": {
+      "get": {
+        "summary": "Метод для получения всех записей",
+        "tags": ["Posts"],
+        "operationId": "getAllPosts",
+        "responses": {
+          "200": {
+            "description": "Возращает список всех записей",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Posts"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/{id}": {
+      "get": {
+        "summary": "Метод для получения инфорации о конкретной записи",
+        "tags": ["Posts"],
+        "operationId": "getSinglePost",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID записи",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Возращает информацию о записи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Posts"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/create_post": {
+      "post": {
+        "summary": "Метод для создания записи",
+        "tags": ["Posts"],
+        "operationId": "createPost",
+        "parameters": [
+          {
+            "name": "jwtToken",
+            "in": "cookie",
+            "required": true,
+            "description": "JWT токен",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Возращает информацию о записи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreatePostRes"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/{id}/edit": {
+      "put": {
+        "summary": "Метод для изменения записи",
+        "tags": ["Posts"],
+        "operationId": "editPost",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID записи",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jwtToken",
+            "in": "cookie",
+            "required": true,
+            "description": "JWT токен",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Возращает информацию о записи",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreatePostRes"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/post/{id}/delete": {
+      "delete": {
+        "summary": "Метод для удаления записи",
+        "tags": ["Posts"],
+        "operationId": "deletePost",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID записи",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jwtToken",
+            "in": "cookie",
+            "required": true,
+            "description": "JWT токен",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешный ответ сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeletePostRes"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ошибка сервера",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Posts": {
+        "type": "object",
+        "properties": {
+          "User": {
+            "type": "object",
+            "example": {
+              "username": "User"
+            },
+            "description": "Пользователь, который создал конкретную запись"
+          },
+          "content": {
+            "type": "string",
+            "example": "<p>Примерное содержание записи в виде JSX разметки</p>"
+          },
+          "id": {
+            "description": "ID записи",
+            "type": "string",
+            "example": "clhwnjg2800kn11v7mkkoemhg"
+          },
+          "userId": {
+            "description": "ID пользователя, создавшего запись",
+            "type": "string",
+            "example": "clhwm4fso8gnm7mkjhtspq0u"
+          },
+          "image": {
+            "description": "Изображение для записи",
+            "type": "string",
+            "example": "src\\\\uploads\\\\a4f3ea51ea52b9f930645711f256fb7b.jpg"
+          },
+          "summary": {
+            "description": "Краткое содержание записи",
+            "type": "string",
+            "example": "Краткое содержание записи"
+          },
+          "title": {
+            "description": "Заголовок записи",
+            "type": "string",
+            "example": "Заголовок записи"
+          },
+          "created_at": {
+            "description": "Дата и время создания записи",
+            "type": "string",
+            "example": "2022-07-01T14:00:00.000Z"
+          },
+          "updated_at": {
+            "description": "Дата и время обновления записи",
+            "type": "string",
+            "example": "2022-10-01T14:00:00.000Z"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "CreatePostRes": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "example": "<p>Примерное содержание записи в виде JSX разметки</p>"
+          },
+          "id": {
+            "description": "ID записи",
+            "type": "string",
+            "example": "clhwnjg2800kn11v7mkkoemhg"
+          },
+          "userId": {
+            "description": "ID пользователя, создавшего запись",
+            "type": "string",
+            "example": "clhwm4fso8gnm7mkjhtspq0u"
+          },
+          "image": {
+            "description": "Изображение для записи",
+            "type": "string",
+            "example": "src\\\\uploads\\\\a4f3ea51ea52b9f930645711f256fb7b.jpg"
+          },
+          "summary": {
+            "description": "Краткое содержание записи",
+            "type": "string",
+            "example": "Краткое содержание записи"
+          },
+          "title": {
+            "description": "Заголовок записи",
+            "type": "string",
+            "example": "Заголовок записи"
+          },
+          "created_at": {
+            "description": "Дата и время создания записи",
+            "type": "string",
+            "example": "2022-07-01T14:00:00.000Z"
+          },
+          "updated_at": {
+            "description": "Дата и время обновления записи",
+            "type": "string",
+            "example": "2022-10-01T14:00:00.000Z"
+          }
+        }
+      },
+      "CreatePostReq": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "description": "Заголовок записи",
+            "type": "string"
+          },
+          "summary": {
+            "description": "Краткое содержание записи",
+            "type": "string"
+          },
+          "file": {
+            "description": "Изображение для записи",
+            "type": "string",
+            "format": "binary"
+          },
+          "postContent": {
+            "description": "Содержание записи в виде JSX разметки",
+            "type": "string"
+          }
+        }
+      },
+      "DeletePostRes": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "ID пользователя",
+            "type": "string",
+            "example": "clhwnjg2800kn11v7mkkoemhg"
+          },
+          "email": {
+            "description": "Email пользователя",
+            "type": "string",
+            "example": "email@email.com"
+          },
+          "password": {
+            "description": "Зашифрованый пароль пользователя",
+            "type": "string",
+            "example": "$2b$12$WMPHIoQmQDhL4TB2s4Ts5.ya9me3u7AYihbLFd2sGxkvuXZQ2IyYK"
+          },
+          "username": {
+            "description": "Имя пользователя",
+            "type": "string",
+            "example": "User"
+          },
+          "created_at": {
+            "description": "Дата и время создания пользователя",
+            "type": "string",
+            "example": "2022-07-01T14:00:00.000Z"
+          },
+          "updated_at": {
+            "description": "Дата и время обновления пользователя",
+            "type": "string",
+            "example": "2022-10-01T14:00:00.000Z"
+          }
+        }
+      },
+      "UserRegister": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "Email пользователя",
+            "type": "string"
+          },
+          "password": {
+            "description": "Пароль пользователя",
+            "type": "string"
+          },
+          "username": {
+            "description": "Имя пользователя",
+            "type": "string"
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "Email пользователя",
+            "type": "string"
+          },
+          "password": {
+            "description": "Пароль пользователя",
+            "type": "string"
+          }
+        }
+      },
+      "LoggedInUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "ID пользователя",
+            "type": "string",
+            "example": "clhwnjg2800kn11v7mkkoemhg"
+          },
+          "email": {
+            "description": "Email пользователя",
+            "type": "string",
+            "example": "email@email.com"
+          },
+          "username": {
+            "description": "Имя пользователя",
+            "type": "string",
+            "example": "User"
+          }
+        }
+      }
+    }
+  }
+}

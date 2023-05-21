@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "node",
+    "baseUrl": "src",
+    "outDir": "dist",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "declaration": true
+  },
+  "include": ["*", "*.ts", "src/index.ts"],
+  "exclude": ["node_modules", ".vscode"]
+}
